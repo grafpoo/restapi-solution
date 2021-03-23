@@ -40,14 +40,14 @@ public class MatchController {
     }
 
     @GetMapping("season-report/{season}")
-    public ResponseEntity<Season> seasonReport(@PathVariable("season") String seasonStr, Model model) {
+    public ResponseEntity<Season> seasonReport(@PathVariable("season") String seasonStr) {
         Season season = matchService.aggregateSeason(seasonStr);
         HttpStatus status = season.isEmpty() ? HttpStatus.NOT_FOUND : HttpStatus.OK;
         return ResponseEntity.status(status).body(season);
     }
 
     @GetMapping("matches-report/{season}")
-    public ResponseEntity<Set<Match>> matchesReport(@PathVariable("season") String season, Model model) {
+    public ResponseEntity<Set<Match>> matchesReport(@PathVariable("season") String season) {
         Set<Match> matches = matchService.getAllBySeasonSorted(season);
         HttpStatus status = matches.isEmpty() ? HttpStatus.NOT_FOUND : HttpStatus.OK;
         return ResponseEntity.status(status).body(matches);
@@ -55,7 +55,7 @@ public class MatchController {
 
     @PostMapping("/match/{season}")
     @ResponseStatus(value = HttpStatus.OK)
-    public Integer addMatches(@PathVariable String season, @RequestBody List<Match> matches, Model model) {
+    public Integer addMatches(@PathVariable String season, @RequestBody List<Match> matches) {
         Map<String, Integer> counts = matchService.saveAll(season, matches);
         int totalCount = counts.values().stream()
                 .mapToInt(i -> i) // this unboxes
